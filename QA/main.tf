@@ -6,7 +6,7 @@ provider "aws"{
 
 module "vpc" {
 
-  source = "../dmz"
+  source = "../dmz" 
   
 }
 
