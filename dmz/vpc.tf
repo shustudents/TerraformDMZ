@@ -1,5 +1,6 @@
 resource "aws_vpc" "dmz" {
-  cidr_block       = "10.0.0.0/16"
+#  cidr_block       = "10.0.0.0/16"
+  cidr_block       = "${var.vpc_cidr}" 
 
   tags {
     Name = "dmz"
