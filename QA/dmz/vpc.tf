@@ -87,9 +87,29 @@ resource "aws_lb" "load_balancer_frontend" {
     Environment = "Environment DMZ"
   }
 }
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+
+  tags {
+    Name = "ami ec2 instance type"
+  }
+}
 resource "aws_instance" "front_ec2" {
-    ami = "ami-1234"
-    instance_type = "m1.small"
+    ami = "${data.aws_ami.ubuntu.id}"
+    instance_type = "t2.micro"
+    subnet_id = "${aws_subnet.frontend.id}"
     security_groups = [
         "${aws_security_group.publicsg.id}",
     ]
@@ -98,8 +118,9 @@ resource "aws_instance" "front_ec2" {
     }
 }
 resource "aws_instance" "app_ec2" {
-    ami = "ami-1234"
-    instance_type = "m1.small"
+    ami = "${data.aws_ami.ubuntu.id}"
+    instance_type = "t2.micro"
+    subnet_id = "${aws_subnet.applayer.id}"
     security_groups = [
         "${aws_security_group.privatesg.id}"
     ]
@@ -108,8 +129,9 @@ resource "aws_instance" "app_ec2" {
     }
 }
 resource "aws_instance" "backend_ec2" {
-    ami = "ami-1234"
-    instance_type = "m1.small"
+    ami = "${data.aws_ami.ubuntu.id}"
+    instance_type = "t2.micro"
+    subnet_id = "${aws_subnet.database.id}"
     security_groups = [
         "${aws_security_group.privatesg.id}"
     ]
