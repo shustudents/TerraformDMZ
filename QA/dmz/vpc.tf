@@ -87,3 +87,131 @@ resource "aws_lb" "load_balancer_frontend" {
     Environment = "Environment DMZ"
   }
 }
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+
+  tags {
+    Name = "ami ec2 instance type"
+  }
+}
+resource "aws_instance" "front_ec2" {
+    ami = "${data.aws_ami.ubuntu.id}"
+    instance_type = "t2.micro"
+    subnet_id = "${aws_subnet.frontend.id}"
+    security_groups = [
+        "${aws_security_group.publicsg.id}",
+    ]
+    tags {
+        Name = "Frontend EC2"
+    }
+}
+resource "aws_instance" "app_ec2" {
+    ami = "${data.aws_ami.ubuntu.id}"
+    instance_type = "t2.micro"
+    subnet_id = "${aws_subnet.applayer.id}"
+    security_groups = [
+        "${aws_security_group.privatesg.id}"
+    ]
+    tags {
+        Name = "App EC2"
+    }
+}
+resource "aws_instance" "backend_ec2" {
+    ami = "${data.aws_ami.ubuntu.id}"
+    instance_type = "t2.micro"
+    subnet_id = "${aws_subnet.database.id}"
+    security_groups = [
+        "${aws_security_group.privatesg.id}"
+    ]
+    tags {
+        Name = "Back EC2"
+    }
+}
+resource "aws_security_group" "publicsg" {
+  name = "vpc_public_web"
+  description = "Allow incoming HTTP connections & SSH access"
+
+  ingress {
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = -1
+    to_port = -1
+    protocol = "icmp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks =  ["0.0.0.0/0"]
+  }
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+
+  vpc_id="${aws_vpc.dmz.id}"
+
+  tags {
+    Name = "Public and Frontend SG"
+  }
+}
+
+resource "aws_security_group" "privatesg"{
+  name = "sg_private_web"
+  description = "Allow traffic from public subnet"
+
+  ingress {
+    from_port = 3306
+    to_port = 3306
+    protocol = "tcp"
+    cidr_blocks = ["${var.vpc_frontend}"]
+  }
+
+  ingress {
+    from_port = -1
+    to_port = -1
+    protocol = "icmp"
+    cidr_blocks = ["${var.vpc_frontend}"]
+  }
+
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["${var.vpc_frontend}"]
+  }
+
+  vpc_id = "${aws_vpc.dmz.id}"
+
+  tags {
+    Name = "Private SG"
+  }
+}
