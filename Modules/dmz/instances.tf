@@ -19,27 +19,31 @@ data "aws_ami" "ubuntu" {
 }
 
 data "template_file" "ec2_template" {
-  template = "${file("./userdata.tpl")}"
+  template = "${file("${var.ec2_template}")}"
 }
 
 resource "aws_instance" "front_ec2" {
     ami = "${data.aws_ami.ubuntu.id}"
     instance_type = "t2.micro"
     subnet_id = "${aws_subnet.frontend.id}"
+    key_name      = "${aws_key_pair.generated_key.key_name}"
     security_groups = [
         "${aws_security_group.publicsg.id}",
+        "${aws_security_group.mgmt_sg.id}", 
     ]
     tags {
         Name = "Frontend EC2"
     }
-    user_data = "${data.template_file.ec2_template.rendered}"
+    user_data = "${var.ec2_template}"
+# user_data = "${data.template_file.ec2_template.rendered}"
 }
 resource "aws_instance" "app_ec2" {
     ami = "${data.aws_ami.ubuntu.id}"
     instance_type = "t2.micro"
     subnet_id = "${aws_subnet.applayer.id}"
+    key_name      = "${aws_key_pair.generated_key.key_name}"
     security_groups = [
-        "${aws_security_group.privatesg.id}"
+        "${aws_security_group.mgmt_sg.id}"
     ]
     tags {
         Name = "App EC2"
@@ -49,10 +53,24 @@ resource "aws_instance" "backend_ec2" {
     ami = "${data.aws_ami.ubuntu.id}"
     instance_type = "t2.micro"
     subnet_id = "${aws_subnet.database.id}"
+    key_name      = "${aws_key_pair.generated_key.key_name}"
     security_groups = [
-        "${aws_security_group.privatesg.id}"
+        "${aws_security_group.mgmt_sg.id}", 
     ]
     tags {
         Name = "Back EC2"
     }
+}
+resource "aws_instance" "ansible_bastion" {
+   ami = "${data.aws_ami.ubuntu.id}"
+   instance_type = "t2.micro"
+   subnet_id = "${aws_subnet.management.id}"
+   key_name      = "${aws_key_pair.generated_key.key_name}"
+   security_groups = [
+    "${aws_security_group.privatesg.id}",
+   ]  
+   tags {
+       Name = "mgmt EC2"
+   }  
+   user_data = "${var.bastion_template}"
 }

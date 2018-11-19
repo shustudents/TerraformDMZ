@@ -29,7 +29,15 @@ resource "aws_subnet" "database" {
   tags {
   Name = "Database"
   }
- } 
+ }
+resource "aws_subnet" "management" {
+  vpc_id      = "${aws_vpc.dmz.id}"
+  cidr_block = "${var.vpc_management}"
+
+  tags {
+  Name = "Management"
+  }
+}
   resource "aws_internet_gateway" "gw" {
     vpc_id = "${aws_vpc.dmz.id}"
 
@@ -63,6 +71,10 @@ resource "aws_route" "private_route" {
 	destination_cidr_block = "0.0.0.0/0"
 	nat_gateway_id = "${aws_nat_gateway.nat.id}"
 }
+resource "aws_route_table_association" "management_association" {
+    subnet_id = "${aws_subnet.management.id}"
+    route_table_id = "${aws_route_table.privatert.id}"
+}
 resource "aws_route_table_association" "frontend_assoc" {
   subnet_id = "${aws_subnet.frontend.id}"
   route_table_id = "${aws_vpc.dmz.main_route_table_id}"
@@ -95,34 +107,21 @@ resource "aws_security_group" "publicsg" {
     from_port = 80
     to_port = 80
     protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["69.119.163.25/32"]
+
   }
 
   ingress {
     from_port = 443
     to_port = 443
     protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["69.119.163.25/32"]
   }
-
-  ingress {
-    from_port = -1
-    to_port = -1
-    protocol = "icmp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   ingress {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks =  ["0.0.0.0/0"]
-  }
-  egress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    cidr_blocks     = ["0.0.0.0/0"]
+    cidr_blocks =  ["69.119.163.25/32"]
   }
 
   vpc_id="${aws_vpc.dmz.id}"
@@ -142,14 +141,6 @@ resource "aws_security_group" "privatesg"{
     protocol = "tcp"
     cidr_blocks = ["${var.vpc_frontend}"]
   }
-
-  ingress {
-    from_port = -1
-    to_port = -1
-    protocol = "icmp"
-    cidr_blocks = ["${var.vpc_frontend}"]
-  }
-
   ingress {
     from_port = 22
     to_port = 22
@@ -163,3 +154,26 @@ resource "aws_security_group" "privatesg"{
     Name = "Private SG"
   }
 }
+resource "aws_security_group" "mgmt_sg"{
+  name = "sg_management"
+  description = "Allow traffic from mgmt to all subnets"
+
+  ingress {
+      from_port = 80
+      to_port = 80
+      protocol = "tcp"
+      cidr_blocks = ["${var.vpc_management}"]
+    }
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["${var.vpc_management}"]
+  }
+
+  vpc_id = "${aws_vpc.dmz.id}"
+
+  tags {
+  Name = "mgmt SG"
+  }
+} 

@@ -21,6 +21,23 @@ variable "vpc_database"{
   description ="cidr block for database"
   default = "10.0.3.0/24"
 }
+variable "vpc_management"{
+  description ="cidr block for database"
+  default = "10.0.4.0/24"
+}
+variable "ec2_template"{
+  description = "var for app file"
+  default = "./userdata.tpl"
+}
+variable "bastion_template"{
+  default = "./ansible.tpl"
+}
+
+variable "key_name" {
+  default   = "ssh-key"
+}
 
 
-
+variable "my_ssh" {
+  default = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDCXYelPJAIuN2oiyqgSpYag7H7W4j/wg1HQDWbC52U0qJCW4Gg4yR/bPIwzIWWQm0FUqYfHmhaNCQeQ2lQ8w9rDhxdRItt5EHG63tSJ4Yr1C6UH+HPtTxhZczuIuJ+aq8G5o3SlTNxSH9qdUNslR+gEN9pOkJpgUbd8lwTZ/DRrhlH+RLMO8eTtO1eC4X6GOakwA3AxJ2WderGLvZQ9NDEkL7KF82qHb9M7qn13x0GkgxPwHPESSt3Od6jYhfO080XPXLBY8HLryDBRGl65qCHvU9c+R7UcFasaCsR23IClGxbb5M5tVnM5nB/HrspdM4Dy0g59npy1202HJNgXK8J eric@Earth"
+}

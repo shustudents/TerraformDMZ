@@ -1,1 +1,0 @@
-{"Modules":[{"Source":"./dmz","Key":"1.vpc;./dmz","Version":"","Dir":".terraform/modules/ea26755bcfbaf19401e915c2c91b47f4","Root":""},{"Source":"../Modules/dmz","Key":"1.vpc;../Modules/dmz","Version":"","Dir":".terraform/modules/a08d0f04d44df2c959dbfca760f3eecb","Root":""}]}
