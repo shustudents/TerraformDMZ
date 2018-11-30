@@ -52,6 +52,9 @@ resource "aws_route" "internet_access" {
 }
 resource "aws_eip" "dmz_eip" {
   vpc      = true
+  #instance = "${aws_instance.front_ec2.id}"
+  #network_interface         = "[aws_internet_gateway.gw]"
+  #associate_with_private_ip = "10.0.1.0/24"
   depends_on = ["aws_internet_gateway.gw"]
  
 }
@@ -107,7 +110,7 @@ resource "aws_security_group" "publicsg" {
     from_port = 80
     to_port = 80
     protocol = "tcp"
-    cidr_blocks = ["69.119.163.25/32"]
+    cidr_blocks = ["148.166.41.100/32"]
 
   }
 
@@ -115,13 +118,13 @@ resource "aws_security_group" "publicsg" {
     from_port = 443
     to_port = 443
     protocol = "tcp"
-    cidr_blocks = ["69.119.163.25/32"]
+    cidr_blocks = ["148.166.41.100/32"]
   }
   ingress {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks =  ["69.119.163.25/32"]
+    cidr_blocks =  ["148.166.41.100/32"]
   }
 
   vpc_id="${aws_vpc.dmz.id}"

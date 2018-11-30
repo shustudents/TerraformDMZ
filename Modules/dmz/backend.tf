@@ -1,11 +1,11 @@
 terraform {
   backend "s3" {
-    bucket = "dmzterraformstate"
+    bucket = "qaterraformstate"
     key = "qa/terraform.tfstate"
     encrypt = "true"
     region = "us-east-1"
-    dynamodb_table = "terraformlockstate"
-#    profile = "default"
+    dynamodb_table = "dynamotable"
+    profile = "default"
     }
 
     versioning {
