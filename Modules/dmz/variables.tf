@@ -29,6 +29,10 @@ variable "ec2_template"{
   description = "var for app file"
   default = "./userdata.tpl"
 }
+variable "vpc_access"{
+  description = "cidr for accessing cloud"
+  default = "24.2.234.45/32"
+}
 variable "bastion_template"{
   default = "./ansible.tpl"
 }
@@ -39,4 +43,5 @@ variable "key_name" {
 
 
 variable "my_ssh" {
-  default = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDW5ZspNMKbjV239fF8OFvOcZGUEvV7VkcaHvKQxu9Be4OBtiRfqObDGkX7hcckXDQT/ygn/he/f/FdAcpg/3TlY9DrSizprZ73awdiEwFnKL6/JItNsB57e7h8+SOttUJkl8Z8Po7EyZKDyjKOqtsuOzECk0Gt1x36/Ix/Hds3Dx7uYjdgGJXlzfKH3XijsNPO1G1ZuGJjIhPgqeXyIr6+rhyPvrCajAeKBNC+LT+dRqKnVWiMsMTg7fNl21mK592Oom4RWClcpsPwH+TblvVrdABOPj5g8JIstgvXt5JsZugXxA7YiuO6nIambjcArPXkETpZHgpbCZENOsXPQl/tQb1R4E+md6940lKWqwhAE5cc2IdYRpC69rxeijSqxtcYh4rpS4f3u26dBtHTMM3NI0vq4XObBdPqSu4Lfmkt6k4pT6ywajiOkTYM5qOcGozE4S0VAG12MtxD4Mkm9dXiqzDALmKEA9E97aBKUB3Dtz9+cVFRY/uhoAX1sRxJZpN1pyicWLPzjgurQTyp4Zi7TnUA2jxvf/S2MZEwaJrXB9eLLAfSKdMxJVzGAlG0OsC3w0iJ5z+vJUgn0sdry62YLWN9oBSxjwUGXoTcO2Zg3THDsbQAwOgLiEb5/QlDAbejI2X3H9LVRLlYs+P35qOZCASr0tEpcm1Y9Tojg62/ew== root@Earth"}
+  default = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDNlBHKyxUOiKlnDCScbnJy1PqfMwH7IND4lDA3dM7nWe/20kNZYrerNN8kRXMJLS/bsQx3dgowsFVvPpd1gsoSSKOZK7JNzGhZOx9Hd920uYFau3tHstrpE5vai+MdRdA1wBHDwVt2dPYbbZaddXBsgmlNAaL0Fe10YDfAEmnNe9RFdgQ/nMcJBoeCwajlP3xAlNzcSJUUBWA0vAwPEgp+PtFOy+fOqERcBwb5aos6hUbPwIlDtvf9xdG7pT2SQNAyQdKXzJywE98V8wiCJaD5W/oIFfr//Q8fS27C0szMLxUr7j7UV7eewNFfuuSVjgsgZ8ftz7fMoXXNZMygU7Vu0dT4J4mFVzJYXUuUEFTtFphKIo37O866342SWAPR3zUqi2iuP1cSJp8WPbBD+7ZwSVNexsRMaAKxDbH/ThogJ5qSfde+PcDEwRCw4WsscZBm7PrBJtRm8W7VDMikDJ+aDDD/a042zltmo0uw3ZwZIyHWWL08u4MMoaLrvD0Eum4DP4GpiPByM16lRl2/zGNhIB+RdyAfWxFyk3Vm7mPhdpKB8P/Tf5OdQMZ+PxRSa3Ow3Bg2XrxTtVDohRC6w1iwmRbeleICFMtlVnljKM6+NEfhPPDgq0XSqseu1n3RwpIbhuBfy3K0oxjSQs8dLYpwvZNc78cNKmLzRzn5SuLjtQ== eric@Earth"
+}
