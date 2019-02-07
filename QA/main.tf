@@ -13,5 +13,5 @@ module "vpc" {
 }
 
 module "policies" {
-  source = "../IAM"
+  source = "../Modules/IAM"
 }
