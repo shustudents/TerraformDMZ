@@ -13,5 +13,6 @@ module "vpc" {
 }
 
 module "policies" {
-  source = "../Modules/IAM"
+  source              = "../Modules/IAM"
+  account_number_root = ""
 }
