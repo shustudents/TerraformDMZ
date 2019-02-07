@@ -11,3 +11,9 @@ data "aws_iam_policy_document" "sts_assume_trust_policy" {
     }
   }
 }
+
+resource "aws_iam_role" "sts_role_trust_policy" {
+  name               = "sts_assume_trust_policy"
+  description        = "sts assume role nist"
+  assume_role_policy = "${data.aws_iam_policy_document.sts_assume_trust_policy.json}"
+}
