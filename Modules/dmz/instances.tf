@@ -30,7 +30,7 @@ resource "aws_instance" "front_ec2" {
     key_name      = "${aws_key_pair.generated_key.key_name}"
     security_groups = [
         "${aws_security_group.publicsg.id}",
-        "${aws_security_group.mgmt_sg.id}", 
+        "${aws_security_group.mgmt_sg.id}",
 #	"${aws_security_group.mgmt_sg.id}",
     ]
     tags {
@@ -57,7 +57,7 @@ resource "aws_instance" "backend_ec2" {
     subnet_id = "${aws_subnet.database.id}"
     key_name      = "${aws_key_pair.generated_key.key_name}"
     security_groups = [
-        "${aws_security_group.mgmt_sg.id}", 
+        "${aws_security_group.mgmt_sg.id}",
     ]
     tags {
         Name = "Back EC2"
@@ -67,12 +67,13 @@ resource "aws_instance" "ansible_bastion" {
    ami = "${data.aws_ami.ubuntu.id}"
    instance_type = "t2.micro"
    subnet_id = "${aws_subnet.management.id}"
+   associate_public_ip_address = true
    key_name      = "${aws_key_pair.generated_key.key_name}"
    security_groups = [
-    "${aws_security_group.privatesg.id}",
-   ]  
+    "${aws_security_group.bastionsg.id}",
+   ]
    tags {
        Name = "mgmt EC2"
-   }  
+   }
    user_data = "${var.bastion_template}"
 }

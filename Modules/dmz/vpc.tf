@@ -58,6 +58,15 @@ resource "aws_eip" "dmz_eip" {
   depends_on = ["aws_internet_gateway.gw"]
 
 }
+resource "aws_eip" "bastion_eip" {
+  vpc      = true
+  depends_on = ["aws_internet_gateway.gw"]
+}
+resource "aws_nat_gateway" "nat_bastion" {
+    allocation_id = "${aws_eip.bastion_eip.id}"
+    subnet_id = "${aws_subnet.management.id}"
+    depends_on = ["aws_internet_gateway.gw"]
+}
 resource "aws_nat_gateway" "nat" {
     allocation_id = "${aws_eip.dmz_eip.id}"
     subnet_id = "${aws_subnet.frontend.id}"
@@ -69,6 +78,17 @@ resource "aws_route_table" "privatert" {
     Name = "Priv Subnet RT"
   }
 }
+resource "aws_route_table" "mgmtrt" {
+  vpc_id = "${aws_vpc.dmz.id}"
+  tags {
+    Name = "Mgmt Subnet RT"
+  }
+}
+resource "aws_route" "mgmt_route" {
+	route_table_id  = "${aws_route_table.mgmtrt.id}"
+	destination_cidr_block = "0.0.0.0/0"
+	nat_gateway_id = "${aws_nat_gateway.nat_bastion.id}"
+}
 resource "aws_route" "private_route" {
 	route_table_id  = "${aws_route_table.privatert.id}"
 	destination_cidr_block = "0.0.0.0/0"
@@ -76,7 +96,7 @@ resource "aws_route" "private_route" {
 }
 resource "aws_route_table_association" "management_association" {
     subnet_id = "${aws_subnet.management.id}"
-    route_table_id = "${aws_route_table.privatert.id}"
+    route_table_id = "${aws_route_table.mgmtrt.id}"
 }
 resource "aws_route_table_association" "frontend_assoc" {
   subnet_id = "${aws_subnet.frontend.id}"
@@ -194,6 +214,6 @@ resource "aws_security_group" "bastionsg" {
   vpc_id="${aws_vpc.dmz.id}"
 
   tags {
-    Name = "Public and Frontend SG"
+    Name = "bastion SG"
   }
 }
