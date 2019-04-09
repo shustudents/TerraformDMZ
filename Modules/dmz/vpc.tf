@@ -56,7 +56,7 @@ resource "aws_eip" "dmz_eip" {
   #network_interface         = "[aws_internet_gateway.gw]"
   #associate_with_private_ip = "10.0.1.0/24"
   depends_on = ["aws_internet_gateway.gw"]
- 
+
 }
 resource "aws_nat_gateway" "nat" {
     allocation_id = "${aws_eip.dmz_eip.id}"
@@ -179,4 +179,21 @@ resource "aws_security_group" "mgmt_sg"{
   tags {
   Name = "mgmt SG"
   }
-} 
+}
+resource "aws_security_group" "bastionsg" {
+  name = "vpc_public_web"
+  description = "Allow incoming  SSH access"
+
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["${var.vpc_access}"]
+  }
+
+  vpc_id="${aws_vpc.dmz.id}"
+
+  tags {
+    Name = "Public and Frontend SG"
+  }
+}
