@@ -181,7 +181,7 @@ resource "aws_security_group" "mgmt_sg"{
   }
 }
 resource "aws_security_group" "bastionsg" {
-  name = "vpc_public_web"
+  name = "vpc_public_mgmt"
   description = "Allow incoming  SSH access"
 
   ingress {
