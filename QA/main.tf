@@ -13,5 +13,5 @@ provider "aws" {
 
 #module "policies" {
 #  source              = "../Modules/IAM"
-#  account_number_root = "592662970146"
+#  account_number_root = ""
 #}
